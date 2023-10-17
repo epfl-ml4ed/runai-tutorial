@@ -1,0 +1,37 @@
+apiVersion: run.ai/v1  # Specifies the version of the Run.ai API this resource is written against.
+kind: RunaiJob  # Specifies the kind of resource, in this case, a Run.ai Job.
+metadata:
+  name: hello1  # The name of the job.
+  namespace: runai-ml4ed-frej  # The namespace in which the job will be created.
+  labels:
+    user: frej  # REPLACE Tequila user
+spec:
+  template:
+    metadata:
+      labels:
+        user: firstname.lastname  # REPLACE
+    spec:
+      hostIPC: true  # Do not change this
+      schedulerName: runai-scheduler  # Do not change this
+      restartPolicy: Never  # Specifies the pod's restart policy. Here, the pod won't be restarted if it terminates.
+      securityContext:
+        runAsUser: UID # Get this from https://people.epfl.ch/firstname.lastname
+        runAsGroup: GID # Get this from https://people.epfl.ch/firstname.lastname
+        fsGroup: GID # Get this from https://people.epfl.ch/firstname.lastname
+      containers:
+      - name: container-name  # No idea why we have this, we already have the job name
+        image: ic-registry.epfl.ch/d-vet/helloworld-image # The container image to use.
+        args:  # Arguments passed to the container.
+        - "--text"
+        - "Goodbye World"
+        resources:
+          limits:
+            cpu: "1"  # Limit the container to use 1 CPU core.
+            nvidia.com/gpu: 0  # Specifies no GPU for this container.
+        volumeMounts:
+        - mountPath: /data  # Path in the container at which the volume should be mounted.
+          name: data-volume  # Refers to the name of the volume to be mounted.
+      volumes:
+      - name: data-volume
+        persistentVolumeClaim:
+          claimName: runai-ml4ed-frej-ml4eddata1  # The name of the PVC that this volume will use.
