@@ -1,5 +1,34 @@
 # RunAI Tutorial
 
+Before following this tutorial, if you are not familiar with docker we highly recommend that you get familiar with docker.
+
+You do not need to be an expert but you need to know:
+
+1. What is a Docker image
+2. What is a Docker container
+3. How to read a Dockerfile
+
+This [video](https://www.youtube.com/watch?v=eGz9DS-aIeY&t=660s) might help.
+
+## Disclaimer
+
+This tutorial has been made on windows with WSL 2 (ubuntu).
+
+If you are on Mac, Windows or another distribution and some of the commands are not recognized, you might need to change them. For example 'sudo service docker start' will not work on Mac or on the Powershell of Windows.
+
+Remember to use a search engine or a chatbot to help.
+
+## Overview
+
+Here are the main steps to run a job on the cluster using RunAI:
+
+1. Write your scripts (train, eval, preprocessed, etc...)
+2. Write and build a docker image that can run your scripts
+3. Upload your image on the ic registry (it will be available on the cloud)
+4. Run the image om the cluster using RunAI
+
+Remember to make sure that your scripts and docker are working locally before submitting anything to the cluster (think twice, compute once).
+
 ## Basic docker image
 
 ```Docker
@@ -56,7 +85,7 @@ If we specify it in when running the container, it will override CMD (the defaul
 docker run -v $(pwd):/data helloworld-image --text="New Hello Word"
 ```
 
-If you want to reomce all your docker images
+If you want to remove all your docker images
 
 ```bash
 docker system prune -a
@@ -64,7 +93,7 @@ docker system prune -a
 
 ## Runai with basic docker image
 
-First let us login to runai
+First let us login to RunAI
 
 ```bash
 runai login
@@ -98,7 +127,7 @@ Now we can push our image:
 docker push ic-registry.epfl.ch/d-vet/helloworld-image
 ```
 
-Checking the existing runai projects
+Checking the existing RunAI projects
 
 ```bash
 runai list project
@@ -160,7 +189,7 @@ Why?
 
 Security.
 
-New way of launching a job on runai:
+New way of launching a job on runai (change the yaml file with your IDs):
 
 ```bash
 kubectl create -f runai-job-default.yaml
@@ -206,12 +235,14 @@ spec:
           claimName: runai-ml4ed-frej-ml4eddata1  # The name of the PVC that this volume will use.
 ```
 
-To get your UserID and GroupID, visite your profile on the EPFL website:
+To get your UserID and GroupID, visit your profile on the EPFL website:
 
 ![image](profile.png)
 
 Where is my file? Where can I access it?
 Need to see with your lab or with IC where is the PVC connected to.
+
+## Specific details for members of the ML4ED lab
 
 For ML4ED (ask me for the password later):
 
@@ -220,3 +251,7 @@ ssh root@icvm0018.xaas.epfl.ch
 ```
 
 and then it should be in: /mnt/ic1files_epfl_ch_u13722_ic_ml4ed_001_files_nfs
+
+Bonus: on the jumpbox icvm0018.xaas.epfl.ch, our lab server is also mounted.
+
+It is located in /mnt/ic1files_epfl_ch_D-VET
