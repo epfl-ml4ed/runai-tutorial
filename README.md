@@ -12,11 +12,17 @@ This [video](https://www.youtube.com/watch?v=eGz9DS-aIeY&t=660s) might help.
 
 ## Disclaimer
 
+<details>
+
+<summary>Disclaimer</summary>
+
 This tutorial has been made on windows with WSL 2 (ubuntu).
 
 If you are on Mac, Windows or another distribution and some of the commands are not recognized, you might need to change them. For example 'sudo service docker start' will not work on Mac or on the Powershell of Windows.
 
 Remember to use a search engine or a chatbot to help.
+
+</details>
 
 ## Overview
 
@@ -24,12 +30,20 @@ Here are the main steps to run a job on the cluster using RunAI:
 
 1. Write your scripts (train, eval, preprocessed, etc...)
 2. Write and build a docker image that can run your scripts
-3. Upload your image on the ic registry (it will be available on the cloud)
-4. Run the image om the cluster using RunAI
+3. Upload your image on EPFL's ic registry (it will be available on the cloud)
+4. Run the image on the cluster using RunAI
 
 Remember to make sure that your scripts and docker are working locally before submitting anything to the cluster (think twice, compute once).
 
 ## Basic docker image
+
+<details>
+
+<summary>Basic image</summary>
+
+In this section, we will see how to build and run a simple docker image that saves a text file on you local machine using python.
+
+Below is the Dockerfile
 
 ```Docker
 # Use the minimalistic Python Alpine image for smaller size.
@@ -91,7 +105,15 @@ If you want to remove all your docker images
 docker system prune -a
 ```
 
-## Runai with basic docker image
+</details>
+
+## RunAI with basic docker image
+
+### Run the docker image with RunAI
+
+<details>
+
+<summary>Running image with RunAI</summary>
 
 First let us login to RunAI
 
@@ -171,6 +193,14 @@ runai submit --name hello2 -p ml4ed-frej -i ic-registry.epfl.ch/d-vet/helloworld
 
 How do we get our file ?: Persistent Volumes.
 
+</details>
+
+### Using PVC to connect your docker image on the cluster to your lab's server
+
+<details>
+
+<summary>PVC</summary>
+
 Check the name of the Persistent Volumes you lab has access to:
 
 ```bash
@@ -242,9 +272,15 @@ To get your UserID and GroupID, visit your profile on the EPFL website:
 Where is my file? Where can I access it?
 Need to see with your lab or with IC where is the PVC connected to.
 
+</details>
+
 ## Specific details for members of the ML4ED lab
 
-For ML4ED (ask me for the password later):
+<details>
+
+<summary>ML4ED</summary>
+
+For ML4ED (ask me for the password):
 
 ```bash
 ssh root@icvm0018.xaas.epfl.ch
@@ -255,3 +291,4 @@ and then it should be in: /mnt/ic1files_epfl_ch_u13722_ic_ml4ed_001_files_nfs
 Bonus: on the jumpbox icvm0018.xaas.epfl.ch, our lab server is also mounted.
 
 It is located in /mnt/ic1files_epfl_ch_D-VET
+</details>
