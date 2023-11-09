@@ -18,7 +18,7 @@ This [video](https://www.youtube.com/watch?v=eGz9DS-aIeY&t=660s) might help.
 
 This tutorial has been made on windows with WSL 2 (ubuntu).
 
-If you are on Mac, Windows or another distribution and some of the commands are not recognized, you might need to change them. For example 'sudo service docker start' will not work on Mac or on the Powershell of Windows.
+If you are on Mac, Windows or another distribution and some of the commands are not recognized, you might need to change them. For example 'sudo service docker start' will not work on Mac or on the Powershell of Windows (on Mac, you can instead open Docker Desktop and then wait for the Docker engine to start).
 
 Remember to use a search engine or a chatbot to help.
 
@@ -65,7 +65,7 @@ ENTRYPOINT ["python", "write_text.py"]
 CMD ["--text", "hello world"]
 ```
 
-Starting docker (mac users can also just start the docker desktop app to start docker)
+Starting docker (as said before, Mac users can also just start the Docker Desktop app and then wait for the Docker Engine to be started)
 
 ```bash
 sudo service docker start
@@ -121,7 +121,10 @@ First let us login to RunAI
 runai login
 ```
 
-You should be prompted with a link to get a password
+You should be prompted with a link to get a password.
+
+If you receive "Fail to get cluster version" or "configmaps is forbidden" warnings, you should ask another lab member who already has access to RunAI to give you the necessary rights to push to your lab's project (for ML4ED, it's `d-vet`) on ic-registry.
+If you don't follow this step, you will receive the "namespaces is forbidden" error when pushing your image later.
 
 Now let us login to the registry. (try with sudo if does not work)
 
@@ -154,6 +157,8 @@ Checking the existing RunAI projects
 ```bash
 runai list project
 ```
+
+If you receive an access denied error after running the command above, run `runai config project ml4ed-frej` (replace `frej` with your Gaspar username) and try again. If the config command itself leads to an access denied error, before running the config command, you may need to replace your Kubeconfig at ~/.kube/config with the recommended version that you can find [here](https://icitdocs.epfl.ch/display/clusterdocs/Getting+Started+with+RunAI#GettingStartedwithRunAI-%60kubectl%60configurationfiles) (remember to keep a backup of the old file somewhere safe before replacing!). After replacing the config file, do the steps from `runai login` again.
 
 Submit your job. After -p put your project name.
 
