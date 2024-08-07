@@ -10,6 +10,8 @@ You do not need to be an expert but you need to know:
 
 This [video](https://www.youtube.com/watch?v=eGz9DS-aIeY&t=660s) might help.
 
+You also need to setup runai by following the instructions [here](https://inside.epfl.ch/ic-it-docs/ic-cluster/caas/connecting/).
+
 ## Disclaimer
 
 <details>
@@ -126,6 +128,12 @@ You should be prompted with a link to get a password.
 If you receive "Fail to get cluster version" or "configmaps is forbidden" warnings, you should ask another lab member who already has access to RunAI to give you the necessary rights to push to your lab's project (for ML4ED, it's `d-vet`) on ic-registry.
 If you don't follow this step, you will receive the "namespaces is forbidden" error when pushing your image later.
 
+If you receive the error below, make sure that you have properly set up runai by following the instructions [here](https://inside.epfl.ch/ic-it-docs/ic-cluster/caas/connecting/)..
+
+```bash
+ERRO[0000] 404 Not Found: {"error":"Realm does not exist","error_description":"For more on this error consult the server log at the debug level."}
+```
+
 Now let us login to the registry. (try with sudo if does not work)
 
 ```bash
@@ -187,13 +195,13 @@ runai list jobs -p ml4ed-frej
 How to delete the job:
 
 ```bash
-runai delete job -p ml4ed-frej hello2 hello1
+runai delete job -p ml4ed-frej hello1
 ```
 
 How to pass the arguments ? Separate them with --
 
 ```bash
-runai submit --name hello2 -p ml4ed-frej -i ic-registry.epfl.ch/d-vet/helloworld-image --cpu-limit 1 --gpu 0 -- --text="hahaha"
+runai submit --name hello1 -p ml4ed-frej -i ic-registry.epfl.ch/d-vet/helloworld-image --cpu-limit 1 --gpu 0 -- --text="hahaha"
 ```
 
 How do we get our file ?: Persistent Volumes.
@@ -231,43 +239,43 @@ kubectl create -f runai-job-default.yaml
 ```
 
 ```yaml
-apiVersion: run.ai/v1  # Specifies the version of the Run.ai API this resource is written against.
-kind: RunaiJob  # Specifies the kind of resource, in this case, a Run.ai Job.
+apiVersion: run.ai/v2alpha1  # Specifies the version of the Run.ai API this resource is written against.
+kind: TrainingWorkload  # Specifies the kind of resource, in this case, a Run.ai Job.
 metadata:
   name: hello1  # The name of the job.
   namespace: runai-ml4ed-frej  # The namespace in which the job will be created.
   labels:
     user: frej  # REPLACE Tequila user
 spec:
-  template:
-    metadata:
-      labels:
-        user: firstname.lastname  # REPLACE
-    spec:
-      hostIPC: true  # Do not change this
-      schedulerName: runai-scheduler  # Do not change this
-      restartPolicy: Never  # Specifies the pod's restart policy. Here, the pod won't be restarted if it terminates.
-      securityContext:
-        runAsUser: UID # Get this from https://people.epfl.ch/firstname.lastname
-        runAsGroup: GID # Get this from https://people.epfl.ch/firstname.lastname
-        fsGroup: GID # Get this from https://people.epfl.ch/firstname.lastname
-      containers:
-      - name: container-name  # No idea why we have this, we already have the job name
-        image: ic-registry.epfl.ch/d-vet/helloworld-image # The container image to use.
-        args:  # Arguments passed to the container.
-        - "--text"
-        - "Goodbye World"
-        resources:
-          limits:
-            cpu: "1"  # Limit the container to use 1 CPU core.
-            nvidia.com/gpu: 0  # Specifies no GPU for this container.
-        volumeMounts:
-        - mountPath: /data  # Path in the container at which the volume should be mounted.
-          name: data-volume  # Refers to the name of the volume to be mounted.
-      volumes:
-      - name: data-volume
-        persistentVolumeClaim:
-          claimName: runai-ml4ed-frej-ml4eddata1  # The name of the PVC that this volume will use.
+  image:
+    value: ic-registry.epfl.ch/d-vet/helloworld-image
+  name:
+    value: hello1  # name prefix of Pod
+  arguments:  # Arguments passed to the container, space-separated, if the argument has spaces, use quotes as below.
+    value: "--text \"Goodbye World\""
+  runAsUser:
+    value: true
+  allowPrivilegeEscalation:  # allow sudo
+    value: true
+  cpu:
+    value: "1"
+  cpuLimit:
+    value: "1"
+  memory:
+    value: 256Mi
+  memoryLimit:
+    value: 512Mi
+  gpu:
+    value: "0"
+  nodePools:
+    value: "default" # default is the node type S8 without GPUs
+  pvcs:
+    items:
+      pvc--0:  # First is "pvc--0", second "pvc--1", etc.
+        value:
+          claimName: runai-ml4ed-frej-ml4eddata1
+          existingPvc: true
+          path: /data
 ```
 
 To get your UserID and GroupID, visit your profile on the EPFL website:
