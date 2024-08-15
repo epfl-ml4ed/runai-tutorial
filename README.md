@@ -245,14 +245,16 @@ metadata:
   name: hello1  # The name of the job.
   namespace: runai-ml4ed-frej  # The namespace in which the job will be created.
   labels:
-    user: frej  # REPLACE Tequila user
+    user: frej  # REPLACE
 spec:
   image:
-    value: ic-registry.epfl.ch/d-vet/helloworld-image
+    value: ic-registry.epfl.ch/d-vet/helloworld-image  # The Docker image to use for the job.
   name:
     value: hello1  # name prefix of Pod
   arguments:  # Arguments passed to the container, space-separated, if the argument has spaces, use quotes as below.
     value: "--text \"Goodbye World\""
+  imagePullPolicy:
+    value: Always  # The image pull policy for the job.
   runAsUser:
     value: true
   allowPrivilegeEscalation:  # allow sudo
@@ -273,14 +275,10 @@ spec:
     items:
       pvc--0:  # First is "pvc--0", second "pvc--1", etc.
         value:
-          claimName: runai-ml4ed-frej-ml4eddata1
+          claimName: runai-ml4ed-frej-ml4eddata1 # REPLACE
           existingPvc: true
-          path: /data
+          path: /results
 ```
-
-To get your UserID and GroupID, visit your profile on the EPFL website:
-
-![image](profile.png)
 
 Where is my file? Where can I access it?
 Need to see with your lab or with IC where is the PVC connected to.

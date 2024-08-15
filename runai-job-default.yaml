@@ -7,11 +7,13 @@ metadata:
     user: frej  # REPLACE Tequila user
 spec:
   image:
-    value: ic-registry.epfl.ch/d-vet/helloworld-image
+    value: ic-registry.epfl.ch/d-vet/helloworld-image  # The Docker image to use for the job.
   name:
     value: hello1  # name prefix of Pod
   arguments:  # Arguments passed to the container, space-separated, if the argument has spaces, use quotes as below.
     value: "--text \"Goodbye World\""
+  imagePullPolicy:
+    value: Always  # The image pull policy for the job.
   runAsUser:
     value: true
   allowPrivilegeEscalation:  # allow sudo
@@ -34,4 +36,4 @@ spec:
         value:
           claimName: runai-ml4ed-frej-ml4eddata1
           existingPvc: true
-          path: /data
+          path: /results

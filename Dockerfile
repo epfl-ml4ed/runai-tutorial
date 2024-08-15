@@ -5,7 +5,7 @@ FROM python:3.9-alpine
 WORKDIR /app
 
 # Create a directory for the data volume
-RUN mkdir /data && chmod 777 /data
+RUN mkdir /results
 
 # Copy the Python script into the container at /app
 COPY write_text.py .

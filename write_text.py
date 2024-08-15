@@ -11,9 +11,9 @@ def main():
 
     args = parser.parse_args()
 
-    print(f"Writing text to file: {args.text}")
+    print(f"{args.text}")
 
-    with open("/data/hello.txt", "w") as f:
+    with open("/results/hello.txt", "w") as f:
         f.write(args.text)
 
 
