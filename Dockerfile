@@ -13,5 +13,5 @@ COPY write_text.py .
 # Always use the Python script as the entry point
 ENTRYPOINT ["python", "write_text.py"]
 
-# By default, write "hello world" to the file.
-CMD ["--text", "hello world"]
+# By default, write "hello world" to the file hello.txt
+CMD ["--text", "hello world", "--output", "hello.txt"]

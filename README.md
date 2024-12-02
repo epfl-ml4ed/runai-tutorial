@@ -53,8 +53,8 @@ COPY write_text.py .
 # Always use the Python script as the entry point
 ENTRYPOINT ["python", "write_text.py"]
 
-# By default, write "hello world" to the file.
-CMD ["--text", "hello world"]
+# By default, write "hello world" to the file hello.txt
+CMD ["--text", "hello world", "--output", "hello.txt"]
 
 ```
 
@@ -78,10 +78,10 @@ docker run helloworld-image
 
 Nothing is created on our machine.
 
-To deal with this: option -v maps a directory from your local machine (host) to a directory inside the container.
+To deal with this: option -v maps a directory from your local machine (host) to a directory inside the container. Here we map the current directory to the /app directory in the container.
 
 ```bash
-docker run -v $(pwd):/data helloworld-image
+docker run -v $(pwd):/app helloworld-image
 ```
 
 But our python script has an argument: "--text"
@@ -89,7 +89,7 @@ But our python script has an argument: "--text"
 If we specify it in when running the container, it will override CMD (the default value)
 
 ```bash
-docker run -v $(pwd):/data helloworld-image --text="New Hello Word"
+docker run -v $(pwd):/app helloworld-image --text="New Hello Word" --output=="new_hello.txt"
 ```
 
 If you want to remove all your docker images
@@ -158,7 +158,7 @@ Checking the existing RunAI projects.
 runai list project
 ```
 
-Submit your job (here on the rcp cluster). And do not forget to change with your uid and gid. They can be found in your EPFL page [https://people.epfl.ch/firstname.lastname](https://people.epfl.ch/firstname.lastname)
+Submit your job (here on the rcp cluster). And do not forget to change your uid and gid as weel as the path in the command, now the file will be writter in frej. They can be found in your EPFL page [https://people.epfl.ch/firstname.lastname](https://people.epfl.ch/firstname.lastname)
 
 ```bash
 runai submit --name hello1 \
@@ -172,7 +172,7 @@ runai submit --name hello1 \
 --memory-limit 512Mi \
 --existing-pvc claimname=ml4ed-scratch,path=/results \
 --node-pools default \
---command -- python write_text.py  --text "Hello Again"
+command: "-- python write_text.py --text Hello Again --output /results/frej/hello_again.txt"
 ```
 
 How to check the job:
@@ -198,6 +198,14 @@ How to delete the job:
 ```bash
 runai delete job -p ml4ed-frej hello1
 ```
+
+The file should be saved in our scratch. To get it, fisrt ssh to the scratch (change frej to your username):
+
+```bash
+ssh frej@jumphost.rcp.epfl.ch
+```
+
+Then it should be in /mnt/ml4ed/scratch/ followed by the path you decided to put in the output argument.
 
 ### Script to make a yaml config into a submit command
 
