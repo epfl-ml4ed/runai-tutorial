@@ -1,19 +1,29 @@
 import argparse
+import os
 
 
 def main():
-    parser = argparse.ArgumentParser(description="Write text to a file.")
+    parser = argparse.ArgumentParser()
 
-    # Add a named argument '--text'.
-    parser.add_argument(
-        "--text", default="hello world", help="Text to write to the file."
-    )
+    parser.add_argument("--text", default="hello world")
 
     args = parser.parse_args()
 
     print(f"{args.text}")
 
-    with open("/results/hello.txt", "w") as f:
+    # print the current working directory
+    print(os.getcwd())
+
+    # print the contents of the directory
+    print(os.listdir())
+
+    # print the contents of the directory /results
+    print(os.listdir("/results"))
+
+    # print the contents of the directory /results/frej
+    print(os.listdir("/results/frej"))
+
+    with open("/results/frej/hello.txt", "w") as f:
         f.write(args.text)
 
 

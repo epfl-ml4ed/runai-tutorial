@@ -1,0 +1,12 @@
+name: hello1
+image: registry.rcp.epfl.ch/ml4ed/helloworld-image
+run-as-uid: 12345 # change to your UID
+run-as-gid: 12345 # change to your GID
+gpu: 0
+cpu: 1
+cpu-limit: 1
+memory: 256Mi
+memory-limit: 512Mi
+existing-pvc: claimname=ml4ed-scratch,path=/results
+node-pools: default # can be "default", "H100", or "V100"
+command: "-- python write_text.py  --text \"Hello Again\""
